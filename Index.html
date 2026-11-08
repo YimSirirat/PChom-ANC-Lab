@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?= appName ?></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <?!= include_('Styles'); ?>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginView" class="login-wrap">
+  <section class="login-brand" aria-hidden="true">
+    <div class="login-brand-inner">
+      <img src="<?!= logo ?>" alt="" class="login-brand-logo">
+      <h1>ANC LAB<br>Network Reporting</h1>
+      <p><?= appNameTh ?></p>
+      <ul class="login-points">
+        <li><i class="bi bi-clipboard2-pulse"></i><span>ดูผล LAB ฝากครรภ์ของหญิงตั้งครรภ์และสามี</span></li>
+        <li><i class="bi bi-send-check"></i><span>ส่งต่อเคสให้ รพ.สต. และติดตามการรับทราบ</span></li>
+        <li><i class="bi bi-shield-lock"></i><span>เห็นข้อมูลตามสิทธิ์ บันทึกการเข้าถึงทุกครั้ง</span></li>
+      </ul>
+    </div>
+  </section>
+  <section class="login-panel">
+    <div class="login-card">
+      <div class="login-mobile-head">
+        <img src="<?!= logo ?>" alt="ตราโรงพยาบาลเชียงคาน" class="login-logo-img">
+        <div class="fw-bold mt-2">ANC LAB Network Reporting</div>
+      </div>
+      <h2 class="login-title">เข้าสู่ระบบ</h2>
+      <p class="login-sub">ใช้ชื่อผู้ใช้ที่ได้รับจากผู้ดูแลระบบ</p>
+      <form id="loginForm" autocomplete="on" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="loginUser">ชื่อผู้ใช้</label>
+          <div class="input-icon">
+            <i class="bi bi-person"></i>
+            <input id="loginUser" class="form-control form-control-lg" autocomplete="username" required maxlength="100" placeholder="username">
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="form-label" for="loginPass">รหัสผ่าน</label>
+          <div class="input-icon">
+            <i class="bi bi-lock"></i>
+            <input id="loginPass" type="password" class="form-control form-control-lg" autocomplete="current-password" required maxlength="200" placeholder="••••••••">
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="แสดงรหัสผ่าน" title="แสดง/ซ่อนรหัสผ่าน"><i class="bi bi-eye"></i></button>
+          </div>
+          <div class="caps-hint d-none" id="capsHint"><i class="bi bi-capslock"></i> เปิด Caps Lock อยู่</div>
+        </div>
+        <button id="loginBtn" class="btn btn-primary btn-lg w-100 mt-3" type="submit">
+          <span class="spinner-border spinner-border-sm d-none" id="loginSpin"></span>
+          <span>เข้าสู่ระบบ</span>
+        </button>
+      </form>
+      <div class="reg-link" id="regLinkWrap">
+        <span>ยังไม่มีบัญชี?</span>
+        <button type="button" class="btn btn-link p-0 fw-semibold" id="btnRegister"><i class="bi bi-person-plus"></i> สมัครสมาชิก</button>
+        <div class="small text-muted">บัญชีใหม่ใช้งานได้เมื่อ Super Admin กำหนดบทบาทและอนุมัติแล้ว</div>
+      </div>
+      <div class="login-foot">
+        <i class="bi bi-info-circle"></i> ข้อมูลสุขภาพส่วนบุคคล ใช้เพื่อการดูแลผู้รับบริการเท่านั้น · v<?= version ?>
+      </div>
+    </div>
+    <footer class="site-credit is-login">
+      <div class="sc-k">ออกแบบและพัฒนาระบบโดย</div>
+      <div class="sc-n">นางสาวสิริรัชต์ สีหงอก</div>
+      <div class="sc-r">นักวิชาการคอมพิวเตอร์ <span class="sc-sep">|</span> โรงพยาบาลปากชม</div>
+    </footer>
+  </section>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="appView" class="d-none">
+  <div class="app">
+    <aside id="sidebar" class="sidebar">
+      <div class="sb-brand">
+        <img src="<?!= logo ?>" alt="" class="brand-logo">
+        <div class="sb-brand-text"><div class="t1">ANC LAB</div><div class="t2">เครือข่าย รพ.เชียงคาน</div></div>
+        <button class="sb-btn" id="sbCollapse" title="ย่อ/ขยายแถบเมนู" aria-label="ย่อหรือขยายแถบเมนู"><i class="bi bi-chevron-double-left"></i></button>
+      </div>
+      <img src="<?!= logo ?>" id="logoSrc" alt="" class="d-none">
+      <nav class="sb-scroll"><ul class="nav flex-column" id="menu"></ul></nav>
+    </aside>
+    <div class="sb-resizer" id="sbResizer" title="ลากเพื่อปรับความกว้าง (ดับเบิลคลิก = ค่าเริ่มต้น)"></div>
+    <div class="sb-backdrop" id="sbBackdrop"></div>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button class="icon-btn d-lg-none" id="sidebarToggle" aria-label="เมนู"><i class="bi bi-list"></i></button>
+        <nav aria-label="breadcrumb" class="topbar-crumb">
+          <ol class="breadcrumb mb-0" id="breadcrumb"></ol>
+        </nav>
+        <div class="ms-auto dropdown">
+          <button class="user-chip" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="avatar" id="meAvatar"><i class="bi bi-person"></i></span>
+            <span class="user-meta d-none d-sm-block"><span class="n" id="meName"></span><span class="o" id="meOrg"></span></span>
+            <i class="bi bi-chevron-down small text-secondary"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><span class="dropdown-item-text small"><span class="role-pill" id="meRole"></span></span></li>
+            <li><span class="dropdown-item-text small text-muted" id="sessionInfo"></span></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="btnChangePw"><i class="bi bi-key me-2"></i>เปลี่ยนรหัสผ่าน</a></li>
+            <li><a class="dropdown-item text-danger" href="#" id="btnLogout"><i class="bi bi-box-arrow-right me-2"></i>ออกจากระบบ</a></li>
+          </ul>
+        </div>
+      </header>
+      <main class="content">
+        <div id="page"></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Profile modal -->
+<div class="modal fade" id="profileModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable modal-fullscreen-md-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileTitle">Patient LAB Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+      </div>
+      <div class="modal-body" id="profileBody"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.0/dist/sweetalert2.all.min.js"></script>
+<?!= include_('JavaScript'); ?>
+</body>
+</html>
